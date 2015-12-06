@@ -1,4 +1,15 @@
 /_build
+/cover
 /deps
 erl_crash.dump
 *.ez
+
+/mix.lock
+/tags
+/config
+
+/.bundle/
+/Gemfile
+/Gemfile.lock
+/vendor/
+/doc

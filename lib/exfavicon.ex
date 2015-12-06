@@ -1,0 +1,2 @@
+defmodule Exfavicon do
+end
