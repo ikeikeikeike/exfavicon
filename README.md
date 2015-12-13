@@ -21,3 +21,19 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
       [applications: [:exfavicon]]
     end
     ```
+
+## Usage
+
+```elixir
+# Find http://elixir-lang.org
+Exfavicon.find("http://elixir-lang.org")    #  "http://elixir-lang.org/favicon.ico"
+
+# Find http://twitter.com
+Exfavicon.find("http://twitter.com")        # "http://abs.twimg.com/favicons/favicon.ico"
+
+# Find http://facebook.com
+Exfavicon.find("http://facebook.com")       # "https://static.xx.fbcdn.net/rsrc.php/yV/r/hzMapiNYYpW.ico"
+
+# Find http://youtube.com
+Exfavicon.find("http://youtube.com")        # "https://s.ytimg.com/yts/img/favicon-vflz7uhzw.ico"
+```
