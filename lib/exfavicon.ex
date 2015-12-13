@@ -4,7 +4,5 @@ defmodule Exfavicon do
   Finder and detector.
   """
   defdelegate find(url), to: Exfavicon.Finder, as: :find
-  defdelegate find(url, html), to: Exfavicon.Finder, as: :find
-  defdelegate valid_favicon_url?, to: Exfavicon.Finder, as: :valid_favicon_url?
-
+  defdelegate find_from_html(url, html), to: Exfavicon.Finder, as: :find_from_html
 end

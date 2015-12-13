@@ -2,7 +2,23 @@ defmodule ExfaviconTest do
   use ExUnit.Case
   doctest Exfavicon
 
-  test "the truth" do
-    assert 1 + 1 == 2
+  test "Check http://elixir-lang.org" do
+    assert Exfavicon.find("http://elixir-lang.org") == "http://elixir-lang.org/favicon.ico"
   end
+
+  test "Check http://twitter.com" do
+    assert Exfavicon.find("http://twitter.com") == "http://abs.twimg.com/favicons/favicon.ico"
+  end
+
+  test "Check http://facebook.com" do
+    assert Exfavicon.find("http://facebook.com") == "https://static.xx.fbcdn.net/rsrc.php/yV/r/hzMapiNYYpW.ico"
+  end
+
+  test "Check http://youtube.com" do
+    assert Exfavicon.find("http://youtube.com") == "https://s.ytimg.com/yts/img/favicon-vflz7uhzw.ico"
+  end
+
+  # Exfavicon.find "http://google.com"
+  # Exfavicon.find "https://plus.google.com/"
+
 end

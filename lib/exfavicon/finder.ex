@@ -2,23 +2,18 @@ defmodule Exfavicon.Finder do
   use HTTPoison.Base
 
   def find(url) do
-    {:ok, resp} = get(url)
-    detect(resp.body, url)
+    {:ok, resp} = get(url, [], follow_redirect: true, max_redirect: 10)
+    find_from_html(resp.body, url)
   end
 
-  def find(url, html) do
-    detect(html, url)
+  def find_from_html(html, url) do
+    case detect(html, url) do
+      {:ok, icon_url} ->
+        if valid_favicon_url?(icon_url), do: icon_url, else: nil
+      _ ->
+        nil
+    end
   end
-
-  # def find_from_html(html, url) do
-    # favicon_url = find_from_link(html, url) || default_path(url)
-
-    # if valid_favicon_url?(favicon_url) do
-      # favicon_url
-    # else
-      # nil
-    # end
-  # end
 
   defp detect(html, url) do
     {:ok, ptn} = Regex.compile("^(shortcut )?icon$", "i") 
@@ -32,57 +27,55 @@ defmodule Exfavicon.Finder do
 
     case favicon_url_or_path do
       "" ->
-        nil
+        {:error, "blank"}
       nil ->
-        nil
+        {:error, "blank"}
       _ ->
         case Regex.match?(~r/^https?/, favicon_url_or_path) do
           true ->
-            favicon_url_or_path
+            {:ok, favicon_url_or_path}
           false ->
-            %{URI.parse(url) | path: favicon_url_or_path}
-            |> URI.to_string
+            uri = URI.parse(favicon_url_or_path)
+            case uri do
+              %URI{host: nil} -> 
+                {:ok, %{URI.parse(url) | path: uri.path} |> URI.to_string}
+              %URI{scheme: nil} -> 
+                {:ok, %{uri | scheme: "http"} |> URI.to_string}
+              _ ->
+                {:error, "unknown uri"}
+            end
         end
     end
   end
 
+  defp valid_favicon_url?(url) do
+    case get(url) do
+      {:ok, resp} ->
+        ctype = 
+          resp.headers
+          |> get_header("content-type")
+        if Regex.match?(~r/image/, ctype), do: true, else: false
+      _ ->
+        false
+    end
+  end
+
+  defp get_header(headers, key) do
+    ctype = 
+      headers 
+      |> Enum.map(fn({k, v}) -> {k |> String.downcase, v} end)
+      |> Enum.filter(fn({k, _}) -> k == (key |> String.downcase) end)
+    case ctype do
+      [] ->
+        ""
+      _ ->
+        ctype |> hd |> elem(1)
+    end
+  end
+
   # defp default_path(url) do
-    # uri = URI(url)
-    # uri.path = '/favicon.ico'
-    # %w[query fragment].each do |element|
-      # uri.send element + '=', nil
-    # end
-
-    # uri.to_s
-  # end
-
-  # defp request(url, options \\ []) do
-    # method = options[:method] || :get
-    # max_redirect = options[:max_redirect] || 10
-
-    # uri = URI(url)
-    # http = Net::HTTP.new(uri.host, uri.port)
-
-    # if uri.scheme == 'https'
-      # http.use_ssl = true
-      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    # end
-
-    # response = http.start do |http|
-      # path =
-        # (uri.path.empty? ? '/' : uri.path) +
-        # (uri.query       ? '?' + uri.query : '') +
-        # (uri.fragment    ? '#' + uri.fragment : '')
-      # http.send(method, path)
-    # end
-
-    # if response.kind_of?(Net::HTTPRedirection) && max_redirect > 0
-      # request(response['Location'], :max_redirect => max_redirect - 1)
-    # else
-      # response.instance_variable_set('@request_url', url)
-      # def response.request_url; @request_url; end
-      # response
-    # end
+    # %{URI.parse(url) | path: "favicon.ico"} 
+    # |> URI.to_string
   # end
 
 end
