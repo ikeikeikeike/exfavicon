@@ -2,8 +2,8 @@ defmodule Exfavicon.Finder do
   use HTTPoison.Base
 
   def find(url) do
-    {:ok, resp} = get(url, [], follow_redirect: true, max_redirect: 10)
-    find_from_html(resp.body, url)
+    {:ok, location, resp} = req(url)
+    find_from_html(resp.body, location)
   end
 
   def find_from_html(html, url) do
@@ -12,6 +12,21 @@ defmodule Exfavicon.Finder do
         if valid_favicon_url?(icon_url), do: icon_url, else: nil
       _ ->
         nil
+    end
+  end
+
+  defp req(url) do
+    {:ok, resp} = get(url)
+
+    headers = 
+      resp.headers
+      |> Enum.map(fn({k, v}) -> {k |> String.downcase, v} end)
+
+    case List.keyfind(headers, "location", 0) do
+      {"location", location} ->
+        req(location)
+      _ ->
+        {:ok, url, resp}
     end
   end
 
@@ -72,10 +87,5 @@ defmodule Exfavicon.Finder do
         ctype |> hd |> elem(1)
     end
   end
-
-  # defp default_path(url) do
-    # %{URI.parse(url) | path: "favicon.ico"} 
-    # |> URI.to_string
-  # end
 
 end
