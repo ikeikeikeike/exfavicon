@@ -1,5 +1,9 @@
 # Exfavicon
 
+[![Build Status](http://img.shields.io/travis/ikeikeikeike/exfavicon.svg?style=flat-square)](http://travis-ci.org/ikeikeikeike/exfavicon)
+[![Hex version](https://img.shields.io/hexpm/v/exfavicon.svg "Hex version")](https://hex.pm/packages/exfavicon)
+[![Hex downloads](https://img.shields.io/hexpm/dt/exfavicon.svg "Hex downloads")](https://hex.pm/packages/exfavicon)
+
 A exfavicon to detect a site's favicon.
 
 ## Installation
@@ -10,7 +14,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
     ```elixir
     def deps do
-      [{:exfavicon, "~> 0.2"}]
+      [{:exfavicon, "~> 0.3"}]
     end
     ```
 
@@ -36,4 +40,8 @@ Exfavicon.find("http://facebook.com")       # "https://static.xx.fbcdn.net/rsrc.
 
 # Find http://youtube.com
 Exfavicon.find("http://youtube.com")        # "https://s.ytimg.com/yts/img/favicon-vflz7uhzw.ico"
+
+# Find https://www.google.com
+Exfavicon.find("http://google.com/")        # "https://www.google.co.jp/images/branding/product/ico/googleg_lodp.ico"
+
 ```

@@ -18,7 +18,8 @@ defmodule ExfaviconTest do
     assert Exfavicon.find("http://youtube.com") == "https://s.ytimg.com/yts/img/favicon-vflz7uhzw.ico"
   end
 
-  # Exfavicon.find "http://google.com"
-  # Exfavicon.find "https://plus.google.com/"
+  test "Check http://google.com" do
+    assert String.starts_with?(Exfavicon.find("http://google.com"), "http://www.google.co.jp/images/branding/product/ico/googleg_lodp.ico")
+  end
 
 end
