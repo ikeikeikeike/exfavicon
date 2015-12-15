@@ -45,3 +45,5 @@ Exfavicon.find("http://youtube.com")        # "https://s.ytimg.com/yts/img/favic
 Exfavicon.find("http://google.com/")        # "https://www.google.co.jp/images/branding/product/ico/googleg_lodp.ico"
 
 ```
+
+[API Reference](http://hexdocs.pm/exfavicon/0.3.1/api-reference.html).
