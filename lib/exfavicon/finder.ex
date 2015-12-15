@@ -3,7 +3,8 @@ defmodule Exfavicon.Finder do
 
   def find(url) do
     {:ok, location, resp} = req(url)
-    find_from_html(resp.body, location)
+    icon_url = find_from_html(resp.body, location)
+    if icon_url, do: icon_url, else: default_path(location)
   end
 
   def find_from_html(html, url) do
@@ -86,6 +87,11 @@ defmodule Exfavicon.Finder do
       _ ->
         ctype |> hd |> elem(1)
     end
+  end
+
+  defp default_path(url) do
+    %{URI.parse(url) | path: "/favicon.ico", query: nil, fragment: nil} 
+    |> URI.to_string
   end
 
 end
