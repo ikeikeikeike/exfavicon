@@ -65,7 +65,7 @@ defmodule Exfavicon.Finder do
   end
 
   defp valid_favicon_url?(url) do
-    case get(url) do
+    case head(url) do
       {:ok, resp} ->
         ctype = 
           resp.headers
