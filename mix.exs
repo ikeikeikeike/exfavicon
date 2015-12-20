@@ -8,7 +8,7 @@ defmodule Exfavicon.Mixfile do
   def project do
     [ app: :exfavicon,
       name: "Exfavicon",
-      version: "0.3.1",
+      version: "0.3.2",
       elixir: "~> 1.1",
       description: @description,
       build_embedded: Mix.env == :prod,
