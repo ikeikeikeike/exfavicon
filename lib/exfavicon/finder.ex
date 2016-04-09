@@ -16,10 +16,22 @@ defmodule Exfavicon.Finder do
     end
   end
 
+  def valid_favicon_url?(url) do
+    case head(url) do
+      {:ok, resp} ->
+        ctype =
+          resp.headers
+          |> get_header("content-type")
+        if Regex.match?(~r/image/, ctype), do: true, else: false
+      _ ->
+        false
+    end
+  end
+
   defp req(url) do
     {:ok, resp} = get(url)
 
-    headers = 
+    headers =
       resp.headers
       |> Enum.map(fn({k, v}) -> {k |> String.downcase, v} end)
 
@@ -32,11 +44,11 @@ defmodule Exfavicon.Finder do
   end
 
   defp detect(html, url) do
-    {:ok, ptn} = Regex.compile("^(shortcut )?icon$", "i") 
+    {:ok, ptn} = Regex.compile("^(shortcut )?icon$", "i")
 
-    favicon_url_or_path = 
-      html 
-      |> Floki.find("link") 
+    favicon_url_or_path =
+      html
+      |> Floki.find("link")
       |> Enum.filter(&(Regex.match?(ptn, List.first(Floki.attribute(&1, "rel")))))
       |> Enum.flat_map(&(Floki.attribute(&1, "href")))
       |> List.first
@@ -53,9 +65,9 @@ defmodule Exfavicon.Finder do
           false ->
             uri = URI.parse(favicon_url_or_path)
             case uri do
-              %URI{host: nil} -> 
+              %URI{host: nil} ->
                 {:ok, %{URI.parse(url) | path: uri.path} |> URI.to_string}
-              %URI{scheme: nil} -> 
+              %URI{scheme: nil} ->
                 {:ok, %{uri | scheme: "http"} |> URI.to_string}
               _ ->
                 {:error, "unknown uri"}
@@ -64,21 +76,9 @@ defmodule Exfavicon.Finder do
     end
   end
 
-  defp valid_favicon_url?(url) do
-    case head(url) do
-      {:ok, resp} ->
-        ctype = 
-          resp.headers
-          |> get_header("content-type")
-        if Regex.match?(~r/image/, ctype), do: true, else: false
-      _ ->
-        false
-    end
-  end
-
   defp get_header(headers, key) do
-    ctype = 
-      headers 
+    ctype =
+      headers
       |> Enum.map(fn({k, v}) -> {k |> String.downcase, v} end)
       |> Enum.filter(fn({k, _}) -> k == (key |> String.downcase) end)
     case ctype do
@@ -90,7 +90,7 @@ defmodule Exfavicon.Finder do
   end
 
   defp default_path(url) do
-    %{URI.parse(url) | path: "/favicon.ico", query: nil, fragment: nil} 
+    %{URI.parse(url) | path: "/favicon.ico", query: nil, fragment: nil}
     |> URI.to_string
   end
 

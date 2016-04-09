@@ -8,14 +8,14 @@ defmodule Exfavicon.Mixfile do
   def project do
     [ app: :exfavicon,
       name: "Exfavicon",
-      version: "0.3.2",
+      version: "0.3.3",
       elixir: "~> 1.1",
       description: @description,
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       package: package,
       deps: deps,
-      source_url: "https://github.com/ikeikeikeike/exfavicon" 
+      source_url: "https://github.com/ikeikeikeike/exfavicon"
     ]
   end
 
@@ -37,7 +37,7 @@ defmodule Exfavicon.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [ {:httpoison, "~> 0.8"}, 
+    [ {:httpoison, "~> 0.8"},
       {:floki, "~> 0.7"},
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.11", only: :dev},
